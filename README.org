@@ -1,0 +1,2 @@
+* .emacs.d
+This directory contains my configuration of emacs. Though almost all of the current contents are copied from [[https://github.com/daviwil/emacs-from-scratch][daviwil/emacs-from-scratch]].
