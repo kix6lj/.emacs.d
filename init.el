@@ -35,6 +35,7 @@
 (dolist (mode '(org-mode-hook
 		term-mode-hook
 		shell-mode-hook
+		treemacs-mode-hook
 		eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
@@ -70,7 +71,7 @@
   :custom ((doom-modeline-height 15)))
 
 (use-package doom-themes
-  :init (load-theme 'doom-vibrant t))
+  :init (load-theme 'doom-acario-dark t))
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -240,7 +241,9 @@
   (lsp-ui-doc-position 'bottom))
 
 (use-package lsp-treemacs
-  :after lsp)
+  :after lsp
+  :config
+  (lsp-treemacs-sync-mode 1))
 
 (use-package lsp-ivy
   :after lsp)
@@ -269,17 +272,46 @@
 (use-package lsp-metals)
 
 
+;;; configuration for terminals
+
+(use-package term
+  :config
+  (setq explicit-shell-file-name "bash")
+  (setq term-prompt-regexp "^[^#?%>\n]*[#$%] *"))
+
+(use-package eterm-256color
+  :hook (term-mode . eterm-256color-mode))
+
+(defun kix6/configure-eshell ()
+  (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
+  (add-to-list 'eshell-output-filter-functions 'eshell-truncate-buffer)
+  
+  (setq eshell-history-siez 10000
+	eshell-buffer-maximum-lines 10000
+	eshell-hist-ignoredups t
+	eshell-scroll-to-bottom-on-input t))
+
+(use-package eshell-git-prompt)
+
+(use-package eshell
+  :hook (eshell-first-time-mode . kix6/configure-eshell)
+  :config
+  (eshell-git-prompt-use-theme 'robbyrussell)
+  (with-eval-after-load 'esh-opt
+    (setq eshell-destroy-buffer-when-process-dies t)
+    (setq eshell-visual-commands '("top" "zsh" "vim" "htop"))))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("0d01e1e300fcafa34ba35d5cf0a21b3b23bc4053d388e352ae6a901994597ab1" default)))
  '(package-selected-packages
    (quote
-    (company-box magit counsel-projectile projectile unicode-fonts visual-fill-column org-bullets which-key use-package rainbow-delimiters ivy-rich ivy-prescient helpful doom-themes doom-modeline counsel))))
+    (eshell-git-prompt ansi-term-mode ansi-term eterm-256color which-key use-package rainbow-delimiters org-bullets magit lsp-ui lsp-metals lsp-ivy ivy-rich ivy-prescient helpful doom-themes doom-modeline counsel-projectile company-box))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
- ;; 
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
