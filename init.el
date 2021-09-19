@@ -38,6 +38,13 @@
 		eshell-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
+;;; key-bindings
+(global-set-key (kbd "C-M-m") 'set-mark-command)
+
+;;; set emacs backup file directory
+(setq backup-directory-alist '(("." . "~/.emacs.d/backup")))
+(setq backup-by-copying t)
+
 (use-package swiper)
 
 (use-package ivy
@@ -107,7 +114,7 @@
 (defun org-mode-setup ()
   (org-indent-mode)
   (variable-pitch-mode 1)
-  (auto-fille-mode 0)
+  (auto-fill-mode 0)
   (visual-line-mode 1))
 
 (defun org-font-setup ()
@@ -145,14 +152,46 @@
   (setq org-agenda-start-with-log-mode t)
   (setq org-log-done 'time)
   (setq org-log-into-drawer t)
-  
+
+  (require 'org-habit)
   (setq org-agenda-files
 	'("~/Documents/OrgFiles/Tasks.org"
-	  "~/Documents/OrgFiles/Birthdays.org"))
+	  "~/Documents/OrgFiles/Birthdays.org"
+	  "~/Documents/OrgFiles/Habits.org"))
 
   (setq org-todo-keywords
 	'((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
-	  (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)" "|" "COMPLETED(c)" "CANC(k@)")))
+	  (sequence "PLAN(p)" "READ(r)" "|" "FINISH(f@)" "CANCLE(c@)")
+	  (sequence "PLAN(p)" "WRITING(w)" "|" "FINISH(f@)" "CANCLE(c@)")))
+  
+  (setq org-refile-targets
+	'(("Archive.org" :maxlevel . 1)
+	  ("Tasks.org" :maxlevel . 1)))
+  
+  (advice-add 'org-refile :after 'org-save-all-org-buffers)
+
+  (setq org-capture-templates
+	`(("t" "Task Entries")
+	  ("tt" "Task" entry (file+olp "~/Documents/OrgFiles/Tasks.org" "Inbox")
+	   "* TODO %?\n %U\n %a\n %i" :empty-lines 1)
+	  ("tr" "Reading task" entry (file+olp "~/Documents/OrgFiles/Tasks.org" "Reading")
+	   "* PLAN %?\n %U\n %a\n %i" :empty-lines 1)
+	  ("tw" "Writing task" entry (file+olp "~/Documents/OrgFiles/Tasks.org" "Writing")
+	   "* PLAN %?\n %U\n %a\n %i" :empty-lines 1)
+	  ("j" "Journal Entries")
+	  ("jj" "Journal" entry
+	   (file+olp+datetree "~/Documents/OrgFiles/Journal.org")
+	   "\n* %<%I:%M %p> - Journal :journal: \n\n%?\n\n"
+	   :clokc-in :clock-resume
+	   :empty-lines 1)
+	  ("jm" "Meeting" entry
+	   (file+olp+datetree "~/Documents/OrgFiles/Journal.org")
+	   "\n* %<%I:%M %p> - Journal :journal:meeting: \n\n%?\n\n"
+	   :clokc-in :clock-resume
+	   :empty-lines 1)))
+
+  (define-key global-map (kbd "C-c c")
+    (lambda () (interactive) (org-capture)))
   
   (org-font-setup))
 
@@ -163,18 +202,84 @@
   :custom
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
+(use-package projectile
+  :diminish projectile-mode
+  :config (projectile-mode)
+  :custom (projectile-completion-system 'ivy)
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :init
+  (setq projectile-switch-project-action #'projectile-dired))
+
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
+
+(use-package magit
+  :commands magit-status
+  :custom
+  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+
+(defun kix6/lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
+
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :hook
+  (lsp-mode . kix6/lsp-mode-setup)
+  (c-mode . lsp)
+  (c++-mode . lsp)
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :config
+  (lsp-enable-which-key-integration t))
+
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode)
+  :custom
+  (lsp-ui-doc-position 'bottom))
+
+(use-package lsp-treemacs
+  :after lsp)
+
+(use-package lsp-ivy
+  :after lsp)
+
+(use-package company
+  :after lsp-mode
+  :hook (lsp-mode . company-mode)
+  :bind
+  (:map company-active-map
+	("<tab>" . company-complete-selection))
+  (:map lsp-mode-map
+	("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+
+;;; configuration for scala
+
+(use-package scala-mode
+  :interpreter
+  ("scala" . scala-mode))
+
+(use-package lsp-metals)
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("0d01e1e300fcafa34ba35d5cf0a21b3b23bc4053d388e352ae6a901994597ab1" default))
+   (quote
+    ("0d01e1e300fcafa34ba35d5cf0a21b3b23bc4053d388e352ae6a901994597ab1" default)))
  '(package-selected-packages
-   '(unicode-fonts visual-fill-column org-bullets which-key use-package rainbow-delimiters ivy-rich ivy-prescient helpful doom-themes doom-modeline counsel)))
+   (quote
+    (company-box magit counsel-projectile projectile unicode-fonts visual-fill-column org-bullets which-key use-package rainbow-delimiters ivy-rich ivy-prescient helpful doom-themes doom-modeline counsel))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+ ;; 
