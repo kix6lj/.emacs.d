@@ -49,68 +49,68 @@
 (use-package swiper)
 
 (use-package ivy
-  :diminish
-  :bind (("C-s" . swiper)
-	 :map ivy-minibuffer-map
-	 ("TAB" . ivy-alt-done)
-	 ("C-l" . ivy-alt-done)
-	 ("C-j" . ivy-next-line)
-	 ("C-k" . ivy-previous-line)
-	 :map ivy-switch-buffer-map
-	 ("C-k" . ivy-previous-line)
-	 ("C-l" . ivy-done)
-	 ("C-d" . ivy-switch-buffer-kill)
-	 :map ivy-reverse-i-search-map
-	 ("C-k" . ivy-previous-line)
-	 ("C-d" . ivy-reverse-i-search-kill))
-  :config
-  (ivy-mode 1))
+	     :diminish
+	     :bind (("C-s" . swiper)
+		    :map ivy-minibuffer-map
+		    ("TAB" . ivy-alt-done)
+		    ("C-l" . ivy-alt-done)
+		    ("C-j" . ivy-next-line)
+		    ("C-k" . ivy-previous-line)
+		    :map ivy-switch-buffer-map
+		    ("C-k" . ivy-previous-line)
+		    ("C-l" . ivy-done)
+		    ("C-d" . ivy-switch-buffer-kill)
+		    :map ivy-reverse-i-search-map
+		    ("C-k" . ivy-previous-line)
+		    ("C-d" . ivy-reverse-i-search-kill))
+	     :config
+	     (ivy-mode 1))
 
 (use-package doom-modeline
-  :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 15)))
+	     :init (doom-modeline-mode 1)
+	     :custom ((doom-modeline-height 15)))
 
 (use-package doom-themes
-  :init (load-theme 'doom-acario-dark t))
+	     :init (load-theme 'doom-acario-dark t))
 
 (use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
+	     :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package which-key
-  :init (which-key-mode)
-  :diminish which-key-mode
-  :config
-  (setq which-key-idle-delay 1))
+	     :init (which-key-mode)
+	     :diminish which-key-mode
+	     :config
+	     (setq which-key-idle-delay 1))
 
 (use-package counsel
-  :bind (("M-x" . counsel-M-x)
-	 ("C-x b" . counsel-ibuffer)
-	 ("C-x C-f" . counsel-find-file)
-	 :map minibuffer-local-map
-	 ("C-r" . 'counsel-minibuffer-history)))
+	     :bind (("M-x" . counsel-M-x)
+		    ("C-x b" . counsel-ibuffer)
+		    ("C-x C-f" . counsel-find-file)
+		    :map minibuffer-local-map
+		    ("C-r" . 'counsel-minibuffer-history)))
 
 (use-package ivy-rich
-  :init
-  (ivy-rich-mode 1))
+	     :init
+	     (ivy-rich-mode 1))
 
 (use-package ivy-prescient
-  :after counsel
-  :custom
-  (ivy-prescient-enable-filtering nil)
-  :config
-  ;; Uncomment the following line to have sorting remembered across sessions!
-  ;(prescient-persist-mode 1)
-  (ivy-prescient-mode 1))
+	     :after counsel
+	     :custom
+	     (ivy-prescient-enable-filtering nil)
+	     :config
+	     ;; Uncomment the following line to have sorting remembered across sessions!
+					;(prescient-persist-mode 1)
+	     (ivy-prescient-mode 1))
 
 (use-package helpful
-  :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  :bind
-  ([remap describe-function] . counsel-describe-function)
-  ([remap describe-command] . helpful-command)
-  ([remap describe-variable] . counsel-describe-variable)
-  ([remap describe-key] . helpful-key))
+	     :custom
+	     (counsel-describe-function-function #'helpful-callable)
+	     (counsel-describe-variable-function #'helpful-variable)
+	     :bind
+	     ([remap describe-function] . counsel-describe-function)
+	     ([remap describe-command] . helpful-command)
+	     ([remap describe-variable] . counsel-describe-variable)
+	     ([remap describe-key] . helpful-key))
 
 (defun org-mode-setup ()
   (org-indent-mode)
@@ -145,129 +145,118 @@
   (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 
 (use-package org
-  :hook (org-mode . org-mode-setup)
-  :config
-  (setq org-ellipsis " ▾"
-	org-hide-emphasis-markers t)
+	     :hook (org-mode . org-mode-setup)
+	     :config
+	     (setq org-ellipsis " ▾"
+		   org-hide-emphasis-markers t)
 
-  (setq org-agenda-start-with-log-mode t)
-  (setq org-log-done 'time)
-  (setq org-log-into-drawer t)
+	     (setq org-agenda-start-with-log-mode t)
+	     (setq org-log-done 'time)
+	     (setq org-log-into-drawer t)
 
-  (require 'org-habit)
-  (setq org-agenda-files
-	'("~/Documents/OrgFiles/Tasks.org"
-	  "~/Documents/OrgFiles/Birthdays.org"
-	  "~/Documents/OrgFiles/Habits.org"))
+	     (require 'org-habit)
+	     
+	     (setq org-agenda-files
+		   '("~/GTD/inbox.org"
+		     "~/GTD/gtd.org"
+		     "~/GTD/tickler.org"))
+	     
 
-  (setq org-todo-keywords
-	'((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
-	  (sequence "PLAN(p)" "READ(r)" "|" "FINISH(f@)" "CANCLE(c@)")
-	  (sequence "PLAN(p)" "WRITING(w)" "|" "FINISH(f@)" "CANCLE(c@)")))
-  
-  (setq org-refile-targets
-	'(("Archive.org" :maxlevel . 1)
-	  ("Tasks.org" :maxlevel . 1)))
-  
-  (advice-add 'org-refile :after 'org-save-all-org-buffers)
+	     (setq org-todo-keywords
+		   '((sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "|" "DONE(d!) CANCLED(c)")))
+	     
+	     (setq org-refile-targets
+		   '(("~/GTD/gtd.org" :maxlevel . 3)
+		     ("~/GTD/someday.org" :level . 1)
+		     ("~/GTD/tickler.org" :maxlevel . 2)))
+	     
+	     (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-  (setq org-capture-templates
-	`(("t" "Task Entries")
-	  ("tt" "Task" entry (file+olp "~/Documents/OrgFiles/Tasks.org" "Inbox")
-	   "* TODO %?\n %U\n %a\n %i" :empty-lines 1)
-	  ("tr" "Reading task" entry (file+olp "~/Documents/OrgFiles/Tasks.org" "Reading")
-	   "* PLAN %?\n %U\n %a\n %i" :empty-lines 1)
-	  ("tw" "Writing task" entry (file+olp "~/Documents/OrgFiles/Tasks.org" "Writing")
-	   "* PLAN %?\n %U\n %a\n %i" :empty-lines 1)
-	  ("j" "Journal Entries")
-	  ("jj" "Journal" entry
-	   (file+olp+datetree "~/Documents/OrgFiles/Journal.org")
-	   "\n* %<%I:%M %p> - Journal :journal: \n\n%?\n\n"
-	   :clokc-in :clock-resume
-	   :empty-lines 1)
-	  ("jm" "Meeting" entry
-	   (file+olp+datetree "~/Documents/OrgFiles/Journal.org")
-	   "\n* %<%I:%M %p> - Journal :journal:meeting: \n\n%?\n\n"
-	   :clokc-in :clock-resume
-	   :empty-lines 1)))
-
-  (define-key global-map (kbd "C-c c")
-    (lambda () (interactive) (org-capture)))
-  
-  (org-font-setup))
+	     (setq org-capture-templates
+		   `(("t" "Todo [inbox]" entry
+		      (file+headline "~/GTD/inbox.org" "Tasks")
+		      "* TODO %i%?")
+		     ("T" "Tickler" entry
+		      (file+headline "~/GTD/tickler.org" "Tickler")
+		      "* %i%? \n %U")))
+	     
+	     (define-key global-map (kbd "C-c c")
+	       (lambda () (interactive) (org-capture)))
+	       
+	     (org-font-setup))
 
 
 (use-package org-bullets
-  :after org
-  :hook (org-mode . org-bullets-mode)
-  :custom
-  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+	     :after org
+	     :hook (org-mode . org-bullets-mode)
+	     :custom
+	     (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
 (use-package projectile
-  :diminish projectile-mode
-  :config (projectile-mode)
-  :custom (projectile-completion-system 'ivy)
-  :bind-keymap
-  ("C-c p" . projectile-command-map)
-  :init
-  (setq projectile-switch-project-action #'projectile-dired))
+	     :diminish projectile-mode
+	     :config (projectile-mode)
+	     :custom (projectile-completion-system 'ivy)
+	     :bind-keymap
+	     ("C-c p" . projectile-command-map)
+	     :init
+	     (setq projectile-switch-project-action #'projectile-dired))
 
 (use-package counsel-projectile
-  :config (counsel-projectile-mode))
+	     :config (counsel-projectile-mode))
 
 (use-package magit
-  :commands magit-status
-  :custom
-  (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+	     :commands magit-status
+	     :custom
+	     (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
 (defun kix6/lsp-mode-setup ()
   (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
   (lsp-headerline-breadcrumb-mode))
 
 (use-package lsp-mode
-  :commands (lsp lsp-deferred)
-  :hook
-  (lsp-mode . kix6/lsp-mode-setup)
-  (c-mode . lsp)
-  (c++-mode . lsp)
-  :init
-  (setq lsp-keymap-prefix "C-c l")
-  :config
-  (lsp-enable-which-key-integration t))
+	     :commands (lsp lsp-deferred)
+	     :hook
+	     (lsp-mode . kix6/lsp-mode-setup)
+	     (c-mode . lsp)
+	     (c++-mode . lsp)
+	     :init
+	     (setq lsp-keymap-prefix "C-c l")
+	     :config
+	     (lsp-enable-which-key-integration t))
 
 (use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode)
-  :custom
-  (lsp-ui-doc-position 'bottom))
+	     :hook (lsp-mode . lsp-ui-mode)
+	     :custom
+	     (lsp-ui-doc-position 'bottom))
 
 (use-package lsp-treemacs
-  :after lsp
-  :config
-  (lsp-treemacs-sync-mode 1))
+	     :after lsp
+	     :config
+	     (lsp-treemacs-sync-mode 1))
 
 (use-package lsp-ivy
-  :after lsp)
+	     :after lsp)
 
 (use-package company
-  :after lsp-mode
-  :hook (lsp-mode . company-mode)
-  :bind
-  (:map company-active-map
-	("<tab>" . company-complete-selection))
-  (:map lsp-mode-map
-	("<tab>" . company-indent-or-complete-common))
-  :custom
-  (company-minimum-prefix-length 1)
-  (company-idle-delay 0.0))
+	     :after lsp-mode
+	     :hook (lsp-mode . company-mode)
+	     :bind
+	     (:map company-active-map
+		   ("<tab>" . company-complete-selection))
+	     (:map lsp-mode-map
+		   ("<tab>" . company-indent-or-complete-common))
+	     :custom
+	     (company-minimum-prefix-length 1)
+	     (company-idle-delay 0.0))
 
 (use-package company-box
-  :hook (company-mode . company-box-mode))
+	     :hook (company-mode . company-box-mode))
 
 ;;; configuration for scala
 
 (use-package scala-mode
-  :interpreter
-  ("scala" . scala-mode))
+	     :interpreter
+	     ("scala" . scala-mode))
 
 (use-package lsp-metals)
 
@@ -275,12 +264,12 @@
 ;;; configuration for terminals
 
 (use-package term
-  :config
-  (setq explicit-shell-file-name "bash")
-  (setq term-prompt-regexp "^[^#?%>\n]*[#$%] *"))
+	     :config
+	     (setq explicit-shell-file-name "bash")
+	     (setq term-prompt-regexp "^[^#?%>\n]*[#$%] *"))
 
 (use-package eterm-256color
-  :hook (term-mode . eterm-256color-mode))
+	     :hook (term-mode . eterm-256color-mode))
 
 (defun kix6/configure-eshell ()
   (add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
@@ -294,12 +283,12 @@
 (use-package eshell-git-prompt)
 
 (use-package eshell
-  :hook (eshell-first-time-mode . kix6/configure-eshell)
-  :config
-  (eshell-git-prompt-use-theme 'robbyrussell)
-  (with-eval-after-load 'esh-opt
-    (setq eshell-destroy-buffer-when-process-dies t)
-    (setq eshell-visual-commands '("top" "zsh" "vim" "htop"))))
+	     :hook (eshell-first-time-mode . kix6/configure-eshell)
+	     :config
+	     (eshell-git-prompt-use-theme 'robbyrussell)
+	     (with-eval-after-load 'esh-opt
+	       (setq eshell-destroy-buffer-when-process-dies t)
+	       (setq eshell-visual-commands '("top" "zsh" "vim" "htop"))))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
