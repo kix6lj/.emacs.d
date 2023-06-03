@@ -9,6 +9,7 @@
 (set-face-background 'hl-line "#CACFD2") 
 (set-face-foreground 'font-lock-comment-face "#CD6155")
 (set-face-background 'font-lock-comment-face "white")
+(set-default-font "CascadiaCode 11")
 (menu-bar-mode -1)
 
 (setq visible-bell t)
@@ -138,7 +139,7 @@
                   (org-level-6 . 1.0)
                   (org-level-7 . 1.0)
                   (org-level-8 . 1.0)))
-    (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+    (set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
 
   ;; Ensure that anything that should be fixed-pitch in Org files appears that way
   (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
@@ -151,6 +152,12 @@
 
 (use-package org
   :hook (org-mode . org-mode-setup)
+  :bind
+  (:map org-mode-map
+	("M-S-<right>" . org-table-insert-column)
+	("M-S-<left>" . org-table-delete-column)
+	("M-S-<up>" . org-table-kill-row))
+   
   :config
   (setq org-ellipsis " ▾"
 	org-hide-emphasis-markers t)
@@ -353,10 +360,30 @@
     (setq eshell-visual-commands '("top" "zsh" "vim" "htop"))))
 
 ;;; for OCaml
+(use-package ocp-indent)
 (use-package tuareg
-  :hook merlin-mode)
+  :init (setq auto-mode-alist (append '(("\\.ml[ip]?$" . tuareg-mode) ("\\.topml$" . tuareg-mode) ("\\.ml[yl]" . tuareg-menhir-mode)) auto-mode-alist)))
 
-(use-package merlin)
+(use-package dune)
+
+(use-package merlin
+  :init (setq merlin-opam-bin-path "/home/kix6/.opam/4.14.0/bin/ocamlmerlin")
+  :hook ((tuareg-mode) . merlin-mode))
+
+(use-package merlin-eldoc
+  :ensure t
+  :hook ((tuareg-mode) . merlin-eldoc-setup))
+
+(use-package flycheck-ocaml
+  :ensure t
+  :config
+  (flycheck-ocaml-setup))
+
+(use-package utop
+  :ensure t
+  :config
+  (add-hook 'tuareg-mode-hook #'utop-minor-mode))
+
 (use-package merlin-company)
 
 ;;; ace-window
@@ -402,7 +429,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (rustic flycheck undo-tree git-timemachine merlin-company merlin tuareg clang-format eshell-git-prompt ansi-term-mode ansi-term eterm-256color which-key use-package rainbow-delimiters magit lsp-ui lsp-metals lsp-ivy ivy-rich ivy-prescient helpful doom-themes doom-modeline counsel-projectile company-box))))
+    (utop flycheck-ocaml merlin-eldoc merlin-mode ocp-indent json-mode flycheck undo-tree git-timemachine merlin-company merlin tuareg clang-format eshell-git-prompt ansi-term-mode ansi-term eterm-256color which-key use-package rainbow-delimiters magit lsp-ui lsp-metals lsp-ivy ivy-rich ivy-prescient helpful doom-themes doom-modeline counsel-projectile company-box))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -410,5 +437,5 @@
  ;; If there is more than one, they won't work right.
  )
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
-(require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
+;; (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line

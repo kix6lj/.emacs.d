@@ -1,0 +1,1 @@
+("~/dppl/project/hardware/" "~/.emacs.d/" "~/dppl/project/" "~/dppl/fullsimple/" "~/dppl/fullref/" "~/Octopus/" "~/course-exercise/proj/std/")

@@ -3,3 +3,5 @@ elpa/
 tutorial/
 eshell/
 *~
+*.desktop*
+.cache
