@@ -6,10 +6,8 @@
 (set-fringe-mode 10)
 
 (global-hl-line-mode 1)
-(set-face-background 'hl-line "#CACFD2") 
-(set-face-foreground 'font-lock-comment-face "#CD6155")
-(set-face-background 'font-lock-comment-face "white")
-(set-default-font "CascadiaCode 11")
+(set-face-font 'default "Consolas 12")
+;; (set-fontset-font "fontset-default" )
 (menu-bar-mode -1)
 
 (setq visible-bell t)
@@ -52,6 +50,25 @@
 (setq backup-directory-alist '(("." . "~/.emacs.d/backup")))
 (setq backup-by-copying t)
 
+
+;;; themes
+(use-package doom-modeline
+  :init (doom-modeline-mode 1)
+  :custom ((doom-modeline-height 15)))
+
+(use-package doom-themes
+  :init (load-theme 'doom-nova t))
+
+(use-package all-the-icons
+  :if (display-graphic-p))
+
+(use-package nerd-icons
+  :if (display-graphic-p))
+
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+;;; ivy and swiper
 (use-package swiper)
 
 (use-package ivy
@@ -71,16 +88,6 @@
 	 ("C-d" . ivy-reverse-i-search-kill))
   :config
   (ivy-mode 1))
-
-(use-package doom-modeline
-  :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 15)))
-
-(use-package doom-themes
-  :init (load-theme 'doom-acario-light t))
-
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
 
 (use-package which-key
   :init (which-key-mode)
@@ -257,52 +264,14 @@
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 
-(defun kix6/lsp-mode-setup ()
-  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
-  (lsp-headerline-breadcrumb-mode))
+;;; Language servers
 
-(use-package lsp-mode
-  :commands (lsp lsp-deferred)
+(use-package eglot
   :hook
-  (lsp-mode . kix6/lsp-mode-setup)
-  (c-mode . lsp)
-  (c++-mode . lsp)
-  :custom
-  (lsp-rust-analyzer-cargo-watch-command "clippy")
-  (lsp-eldoc-render-all t)
-  (lsp-idle-delay 0.6)
-  ;; enable / disable the hints as you prefer:
-  (lsp-rust-analyzer-server-display-inlay-hints t)
-  (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
-  (lsp-rust-analyzer-display-chaining-hints t)
-  (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
-  (lsp-rust-analyzer-display-closure-return-type-hints t)
-  (lsp-rust-analyzer-display-parameter-hints nil)
-  (lsp-rust-analyzer-display-reborrow-hints nil)
-  :init
-  (setq lsp-keymap-prefix "C-c l")
-  :config
-  (lsp-enable-which-key-integration t))
-
-(use-package lsp-ui
-  :ensure
-  :hook (lsp-mode . lsp-ui-mode)
-  :custom
-  (lsp-ui-doc-position 'bottom)
-  (lsp-ui-peek-always-show t)
-  (lsp-ui-sideline-show-hover nil)
-  (lsp-ui-doc-enable nil)
-  (lsp-ui-imenu-enable t)
-  (lsp-ui-sideline-enable nil))
-
-
-(use-package lsp-treemacs
-  :after lsp
-  :config
-  (lsp-treemacs-sync-mode 1))
-
-(use-package lsp-ivy
-  :after lsp)
+  (python-mode . eglot-ensure)
+  (c-mode . eglot-ensure)
+  (rust-mode . eglot-ensure)
+  (c++-mode . eglot-ensure))
 
 (use-package company
   :after lsp-mode
@@ -318,15 +287,6 @@
 
 (use-package company-box
   :hook (company-mode . company-box-mode))
-
-;;; configuration for scala
-
-(use-package scala-mode
-  :interpreter
-  ("scala" . scala-mode))
-
-(use-package lsp-metals)
-
 
 ;;; configuration for terminals
 
@@ -420,7 +380,13 @@
     (setq-local buffer-save-without-query t))
   (add-hook 'before-save-hook 'lsp-format-buffer nil t))
 
+;;; Configuration for TRAMP
 (use-package tramp)
+(when (eq system-type 'windows-nt)
+  (push '("-tt")
+	(cadr (assoc 'tramp-login-args
+	      (assoc "ssh" tramp-methods))))
+  (prefer-coding-system 'utf-8-unix))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
