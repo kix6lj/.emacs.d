@@ -16,6 +16,7 @@
 (require 'package)
 
 (setq package-archives '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu//")
+			 ("nongnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/nongnu/")
 			 ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")))
 
 
@@ -157,6 +158,8 @@
   (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
   (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 
+(use-package org-contrib)
+(use-package ledger-mode)
 (use-package org
   :hook (org-mode . org-mode-setup)
   :bind
@@ -174,7 +177,7 @@
   (setq org-log-into-drawer t)
 
   (require 'org-habit)
-  
+
   (setq org-agenda-files
 	'("~/GTD/inbox.org"
 	  "~/GTD/gtd.org"
@@ -202,7 +205,15 @@
   (define-key global-map (kbd "C-c c")
 	      (lambda () (interactive) (org-capture)))
   
-  (org-font-setup))
+  (org-font-setup)
+
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (python . t)
+     (ledger . t)))
+  )
+
 
 (use-package org-roam
   :ensure t
@@ -226,7 +237,7 @@
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
       :unnarrowed t)))
   
-  :bind (("C-c n l" . org-roam-buffer-toggle)
+  :bind (("C-c n l" . org-roam-buoffer-toggle)
 	 ("C-c n f" . org-roam-node-find)
 	 ("C-c n i" . org-roam-node-insert)
 	 :map org-mode-map
@@ -394,8 +405,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   (quote
-    (utop flycheck-ocaml merlin-eldoc merlin-mode ocp-indent json-mode flycheck undo-tree git-timemachine merlin-company merlin tuareg clang-format eshell-git-prompt ansi-term-mode ansi-term eterm-256color which-key use-package rainbow-delimiters magit lsp-ui lsp-metals lsp-ivy ivy-rich ivy-prescient helpful doom-themes doom-modeline counsel-projectile company-box))))
+   '(ledger-mode ob-ledger utop flycheck-ocaml merlin-eldoc merlin-mode ocp-indent json-mode flycheck undo-tree git-timemachine merlin-company merlin tuareg clang-format eshell-git-prompt ansi-term-mode ansi-term eterm-256color which-key use-package rainbow-delimiters magit lsp-ui lsp-metals lsp-ivy ivy-rich ivy-prescient helpful doom-themes doom-modeline counsel-projectile company-box)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
