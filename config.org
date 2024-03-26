@@ -8,6 +8,16 @@
 
 ** Eglot
 
+** Remote development
+Using ~tramp~ for remote development.
+#+begin_src emacs-lisp
+  (use-package tramp
+    :config
+    (when (eq system-type 'windows-nt)
+      (prefer-coding-system 'utf-8-unix))
+    (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+    )
+#+end_src
 
 * Org-mode
 ** Faces
@@ -401,12 +411,6 @@ Roam is a note taking tool for connecting different entries (See [[https://roamr
     (add-hook 'before-save-hook 'lsp-format-buffer nil t))
 
   ;;; Configuration for TRAMP
-  (use-package tramp)
-  (when (eq system-type 'windows-nt)
-    (push '("-tt")
-          (cadr (assoc 'tramp-login-args
-                (assoc "ssh" tramp-methods))))
-    (prefer-coding-system 'utf-8-unix))
 
   (custom-set-variables
    ;; custom-set-variables was added by Custom.
