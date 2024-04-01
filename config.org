@@ -197,9 +197,7 @@ Using ~sort-tab~ to handle buffers
   (use-package sort-tab
     :load-path"plugins/sort-tab/"
     :commands sort-tab-mode
-    :config (sort-tab-mode 1)
-    :bind
-    ("s-1" . sort-tab-select-visible-tab))
+    :config (sort-tab-mode 1))
 #+end_src
 
 * Theme and looks
