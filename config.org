@@ -191,6 +191,16 @@ Roam is a note taking tool for connecting different entries (See [[https://roamr
 
 * Interaction
 ** Ivy
+** sort-tab
+Using ~sort-tab~ to handle buffers
+#+begin_src emacs-lisp
+  (use-package sort-tab
+    :load-path"plugins/sort-tab/"
+    :commands sort-tab-mode
+    :config (sort-tab-mode 1)
+    :bind
+    ("s-1" . sort-tab-select-visible-tab))
+#+end_src
 
 * Theme and looks
 ** Icons fonts
