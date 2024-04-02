@@ -2,8 +2,6 @@
 #+AUTHOR: kix6
 
 * Development
-** Treemacs
-
 ** Git
 
 ** Eglot
@@ -75,49 +73,34 @@ Use treesit for major modes
     (global-treesit-auto-mode))
 #+end_src
 
-** Treemacs
-#+begin_src emacs-lisp
-  (use-package treemacs
-    :bind ("M-0" . treemacs-select-window))
-#+end_src
-
 * Org-mode
-** Faces
-#+begin_src emacs-lisp
-      (defun org-mode-setup ()
-        (org-indent-mode)
-        (variable-pitch-mode 1)
-        (auto-fill-mode 0)
-        (visual-line-mode 1))
-#+end_src 
-
 ** Fonts
 #+begin_src emacs-lisp
-      (defun org-font-setup ()
-        ;; Replace list hyphen with dot
-        (font-lock-add-keywords 'org-mode
-                                '(("^ *\\([-]\\) "
-                                   (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+  (defun org-font-setup ()
+    ;; Replace list hyphen with dot
+    (font-lock-add-keywords 'org-mode
+                            '(("^ *\\([-]\\) "
+                               (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
-        ;; Set faces for heading levels
-        (dolist (face '((org-level-1 . 1.2)
-                        (org-level-2 . 1.1)
-                        (org-level-3 . 1.05)
-                        (org-level-4 . 1.0)
-                        (org-level-5 . 1.0)
-                        (org-level-6 . 1.0)
-                        (org-level-7 . 1.0)
-                        (org-level-8 . 1.0)))
-          (set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
+    ;; Set faces for heading levels
+    (dolist (face '((org-level-1 . 1.2)
+                    (org-level-2 . 1.1)
+                    (org-level-3 . 1.05)
+                    (org-level-4 . 1.0)
+                    (org-level-5 . 1.0)
+                    (org-level-6 . 1.0)
+                    (org-level-7 . 1.0)
+                    (org-level-8 . 1.0)))
+      (set-face-attribute (car face) nil :weight 'regular :height (cdr face)))
 
-        ;; Ensure that anything that should be fixed-pitch in Org files appears that way
-        (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
-        (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
-        (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
-        (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
-        (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
-        (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
-        (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+    ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+    (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+    (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+    (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+    (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
 #+end_src
 
 ** org-mode settings
@@ -136,65 +119,66 @@ Configuring ~org-mode~ keybindings
 | ~C-c c~       | Capture template |
 
 #+begin_src emacs-lisp
-    (defun org-mode-setup ()
-      (org-indent-mode)
-      (variable-pitch-mode 1)
-      (auto-fill-mode 0)
-      (visual-line-mode 1))
+  (defun org-mode-setup ()
+    (org-indent-mode)
+    (variable-pitch-mode 1)
+    (auto-fill-mode 0)
+    (visual-line-mode 1))
 
-    (use-package org
-      :hook (org-mode . org-mode-setup)
-      :bind
-      (:map org-mode-map
-            ("M-S-<right>" . org-table-insert-column)
-            ("M-S-<left>" . org-table-delete-column)
-            ("M-S-<up>" . org-table-kill-row))
+  (use-package org
+    :hook (org-mode . org-mode-setup)
+    :hook (org-mode . org-font-setup)
+    :bind
+    (:map org-mode-map
+          ("M-S-<right>" . org-table-insert-column)
+          ("M-S-<left>" . org-table-delete-column)
+          ("M-S-<up>" . org-table-kill-row))
 
-      :config
-      (setq org-ellipsis " ▾"
-            org-hide-emphasis-markers t)
+    :config
+    (setq org-ellipsis " ▾"
+          org-hide-emphasis-markers t)
 
-      (setq org-agenda-start-with-log-mode t)
-      (setq org-log-done 'time)
-      (setq org-log-into-drawer t)
+    (setq org-agenda-start-with-log-mode t)
+    (setq org-log-done 'time)
+    (setq org-log-into-drawer t)
 
-      (require 'org-habit)
+    (require 'org-habit)
 
-      (setq org-agenda-files
-            '("~/GTD/inbox.org"
-              "~/GTD/gtd.org"
-              "~/GTD/tickler.org"))
+    (setq org-agenda-files
+          '("~/GTD/inbox.org"
+            "~/GTD/gtd.org"
+            "~/GTD/tickler.org"))
 
 
-      (setq org-todo-keywords
-            '((sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "|" "DONE(d!) CANCLED(c)")))
+    (setq org-todo-keywords
+          '((sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "|" "DONE(d!) CANCLED(c)")))
 
-      (setq org-refile-targets
-            '(("~/GTD/gtd.org" :maxlevel . 3)
-              ("~/GTD/someday.org" :level . 1)
-              ("~/GTD/tickler.org" :maxlevel . 2)))
+    (setq org-refile-targets
+          '(("~/GTD/gtd.org" :maxlevel . 3)
+            ("~/GTD/someday.org" :level . 1)
+            ("~/GTD/tickler.org" :maxlevel . 2)))
 
-      (advice-add 'org-refile :after 'org-save-all-org-buffers)
+    (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-      (setq org-capture-templates
-            `(("t" "Todo [inbox]" entry
-               (file+headline "~/GTD/inbox.org" "Tasks")
-               "* TODO %i%?")
-              ("T" "Tickler" entry
-               (file+headline "~/GTD/tickler.org" "Tickler")
-               "* %i%? \n %U")))
+    (setq org-capture-templates
+          `(("t" "Todo [inbox]" entry
+             (file+headline "~/GTD/inbox.org" "Tasks")
+             "* TODO %i%?")
+            ("T" "Tickler" entry
+             (file+headline "~/GTD/tickler.org" "Tickler")
+             "* %i%? \n %U")))
 
-      (define-key global-map (kbd "C-c c")
-                  (lambda () (interactive) (org-capture)))
+    (define-key global-map (kbd "C-c c")
+                (lambda () (interactive) (org-capture)))
 
-      (org-font-setup)
+    (org-font-setup)
 
-      (org-babel-do-load-languages
-       'org-babel-load-languages
-       '((emacs-lisp . t)
-         (python . t)
-         (ledger . t)))
-      )
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (python . t)
+       (ledger . t)))
+    )
 
 #+end_src
 
@@ -355,6 +339,23 @@ Using ~ace-window~ to deal with multiple windows. Pressing ~M-o~ to call ~ace-wi
 
   (use-package rainbow-delimiters
     :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
+
+** Window management
+Shortcuts, with prefix ~C-c C-w~
+| Key | Function                     |
+|-----+------------------------------|
+| ~<~   | Previous window config       |
+| ~>~   | Next window config           |
+| ~'~   | Last window config           |
+| ~"~   | Close current window config  |
+| ~,~   | Rename current window config |
+| ~0-9~ | Swith to window config       |
+
+#+begin_src emacs-lisp
+  (use-package eyebrowse
+    :config
+    (eyebrowse-mode t))
 #+end_src
 
 * Misc
