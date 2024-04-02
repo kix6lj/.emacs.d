@@ -8,15 +8,46 @@
 
 ** Eglot
 
+** Languages
+*** Python
+Install ~conda.el~
+#+begin_src emacs-lisp
+  (use-package conda
+    :config
+    (conda-env-initialize-interactive-shells)
+    (conda-env-initialize-eshell))
+#+end_src
 ** Remote development
 Using ~tramp~ for remote development.
 #+begin_src emacs-lisp
   (use-package tramp
     :config
     (when (eq system-type 'windows-nt)
-      (prefer-coding-system 'utf-8-unix))
-    (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+      (progn
+	(dolist (method tramp-methods)
+	  (if (string= "ssh"
+		       (cadr (assoc 'tramp-login-program (cdr method))))
+	      (push '("-tt")
+		    (cadr (assoc 'tramp-login-args
+				 method)))
+	    nil))
+	(prefer-coding-system 'utf-8-unix)))
+      (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
     )
+#+end_src
+
+#+RESULTS:
+: t
+
+** Treesit
+Use treesit for major modes
+#+begin_src emacs-lisp
+  (use-package treesit-auto
+    :custom
+    (treesit-auto-install 'prompt)
+    :config
+    (treesit-auto-add-to-auto-mode-alist 'all)
+    (global-treesit-auto-mode))
 #+end_src
 
 * Org-mode
