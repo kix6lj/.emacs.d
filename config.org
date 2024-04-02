@@ -8,6 +8,25 @@
 
 ** Eglot
 
+** Completeion
+Using ~company~ for completion
+#+begin_src emacs-lisp
+  (use-package company
+    :after lsp-mode
+    :hook (lsp-mode . company-mode)
+    :bind
+    (:map company-active-map
+          ("<tab>" . company-complete-selection))
+    (:map lsp-mode-map
+          ("<tab>" . company-indent-or-complete-common))
+    :custom
+    (company-minimum-prefix-length 1)
+    (company-idle-delay 0.0))
+
+  (use-package company-box
+    :hook (company-mode . company-box-mode))
+#+end_src
+
 ** Languages
 *** Python
 Install ~conda.el~
@@ -36,8 +55,14 @@ Using ~tramp~ for remote development.
     )
 #+end_src
 
-#+RESULTS:
-: t
+** Magit
+Using ~magit~ to interact with ~git~. Shortcut is ~C-g~.
+#+begin_src emacs-lisp
+  (use-package magit
+    :commands magit-status
+    :custom
+    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
+#+end_src
 
 ** Treesit
 Use treesit for major modes
@@ -48,6 +73,12 @@ Use treesit for major modes
     :config
     (treesit-auto-add-to-auto-mode-alist 'all)
     (global-treesit-auto-mode))
+#+end_src
+
+** Treemacs
+#+begin_src emacs-lisp
+  (use-package treemacs
+    :bind ("M-0" . treemacs-select-window))
 #+end_src
 
 * Org-mode
@@ -222,44 +253,8 @@ Roam is a note taking tool for connecting different entries (See [[https://roamr
 
 * Interaction
 ** Ivy
-** sort-tab
-Using ~sort-tab~ to handle buffers
 #+begin_src emacs-lisp
-  (use-package sort-tab
-    :load-path"plugins/sort-tab/"
-    :commands sort-tab-mode
-    :config (sort-tab-mode 1))
-#+end_src
-
-* Theme and looks
-** Icons fonts
-#+begin_src emacs-lisp
-  (use-package all-the-icons
-    :if (display-graphic-p))
-
-  (use-package nerd-icons
-    :if (display-graphic-p))
-#+end_src
-
-** Theme
-#+begin_src emacs-lisp
-  (use-package doom-modeline
-    :init (doom-modeline-mode 1)
-    :custom ((doom-modeline-height 15)))
-
-  (use-package doom-themes
-    :init (load-theme 'doom-nova t))
-
-  (use-package rainbow-delimiters
-    :hook (prog-mode . rainbow-delimiters-mode))
-#+end_src
-
-* Misc
-#+begin_src emacs-lisp
-  (use-package treemacs
-    :bind ("M-0" . treemacs-select-window))
-
-  ;;; ivy and swiper
+    ;;; ivy and swiper
   (use-package swiper)
 
   (use-package ivy
@@ -315,47 +310,61 @@ Using ~sort-tab~ to handle buffers
     ([remap describe-command] . helpful-command)
     ([remap describe-variable] . counsel-describe-variable)
     ([remap describe-key] . helpful-key))
+#+end_src
 
-  (use-package projectile
-    :diminish projectile-mode
-    :config (projectile-mode)
-    :custom (projectile-completion-system 'ivy)
-    :bind-keymap
-    ("C-c p" . projectile-command-map)
-    :init
-    (setq projectile-switch-project-action #'projectile-dired))
+** sort-tab
+Using ~sort-tab~ to handle buffers
+#+begin_src emacs-lisp
+  (use-package sort-tab
+    :load-path"plugins/sort-tab/"
+    :commands sort-tab-mode
+    :config (sort-tab-mode 1))
+#+end_src
 
-  (use-package counsel-projectile
-    :config (counsel-projectile-mode))
-
-  (use-package magit
-    :commands magit-status
-    :custom
-    (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
-
-  ;;; Language servers
-
-  (use-package eglot
-    :hook
-    (python-mode . eglot-ensure)
-    (c-mode . eglot-ensure)
-    (rust-mode . eglot-ensure)
-    (c++-mode . eglot-ensure))
-
-  (use-package company
-    :after lsp-mode
-    :hook (lsp-mode . company-mode)
+** Window management
+Using ~ace-window~ to deal with multiple windows. Pressing ~M-o~ to call ~ace-window~ and choose the window by a key when there are more than three windows.
+#+begin_src emacs-lisp
+  ;;; ace-window
+  (use-package ace-window
+    :ensure
     :bind
-    (:map company-active-map
-          ("<tab>" . company-complete-selection))
-    (:map lsp-mode-map
-          ("<tab>" . company-indent-or-complete-common))
-    :custom
-    (company-minimum-prefix-length 1)
-    (company-idle-delay 0.0))
+    ("M-o" . ace-window)
+    :delight
+    :config
+    (ace-window-display-mode 1))
+#+end_src
 
-  (use-package company-box
-    :hook (company-mode . company-box-mode))
+* Theme and looks
+** Icons fonts
+#+begin_src emacs-lisp
+  (use-package all-the-icons
+    :if (display-graphic-p))
+
+  (use-package nerd-icons
+    :if (display-graphic-p))
+#+end_src
+
+** Theme
+#+begin_src emacs-lisp
+  (use-package doom-modeline
+    :init (doom-modeline-mode 1)
+    :custom ((doom-modeline-height 15)))
+
+  (use-package doom-themes
+    :init (load-theme 'doom-nova t))
+
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
+
+* Misc
+** git-timemachine
+Walk through git commits.
+#+begin_src emacs-lisp
+(use-package git-timemachine)
+#+end_src
+
+#+begin_src emacs-lisp
 
   ;;; configuration for terminals
 
@@ -378,8 +387,6 @@ Using ~sort-tab~ to handle buffers
           eshell-hist-ignoredups t
           eshell-scroll-to-bottom-on-input t))
 
-  (use-package eshell-git-prompt)
-
   (use-package eshell
     :hook (eshell-first-time-mode . kix6/configure-eshell)
     :config
@@ -388,83 +395,5 @@ Using ~sort-tab~ to handle buffers
       (setq eshell-destroy-buffer-when-process-dies t)
       (setq eshell-visual-commands '("top" "zsh" "vim" "htop"))))
 
-  ;;; for OCaml
-  (use-package ocp-indent)
-  (use-package tuareg
-    :init (setq auto-mode-alist (append '(("\\.ml[ip]?$" . tuareg-mode) ("\\.topml$" . tuareg-mode) ("\\.ml[yl]" . tuareg-menhir-mode)) auto-mode-alist)))
-
-  (use-package dune)
-
-  (use-package merlin
-    :init (setq merlin-opam-bin-path "/home/kix6/.opam/4.14.0/bin/ocamlmerlin")
-    :hook ((tuareg-mode) . merlin-mode))
-
-  (use-package merlin-eldoc
-    :ensure t
-    :hook ((tuareg-mode) . merlin-eldoc-setup))
-
-  (use-package flycheck-ocaml
-    :ensure t
-    :config
-    (flycheck-ocaml-setup))
-
-  (use-package utop
-    :ensure t
-    :config
-    (add-hook 'tuareg-mode-hook #'utop-minor-mode))
-
-  (use-package merlin-company)
-
-  ;;; ace-window
-  (use-package ace-window
-    :ensure
-    :bind
-    ("M-o" . ace-window)
-    :delight
-    :config
-    (ace-window-display-mode 1))
-
-  (use-package git-timemachine)
-
   (use-package undo-tree)
-
-  ;;; config for rust
-  (use-package rustic
-    :ensure
-    :bind (:map rustic-mode-map
-                ("M-j" . lsp-ui-imenu)
-                ("M-?" . lsp-find-references)
-                ("C-c C-c l" . flycheck-list-errors)
-                ("C-c C-c a" . lsp-execute-code-action)
-                ("C-c C-c q" . lsp-workspace-restart)
-                ("C-c C-c Q" . lsp-workspace-shutdown)
-                ("C-c C-c s" . lsp-rust-analyzer-status))
-    :hook
-    (rustic-mode-hook . rk/rustic-mode-hook)
-    :custom
-    (rustic-format-on-save t))
-
-  (defun rk-rustic-mode-hook ()
-    (when buffer-file-name
-      (setq-local buffer-save-without-query t))
-    (add-hook 'before-save-hook 'lsp-format-buffer nil t))
-
-  ;;; Configuration for TRAMP
-
-  (custom-set-variables
-   ;; custom-set-variables was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(package-selected-packages
-     '(ledger-mode ob-ledger utop flycheck-ocaml merlin-eldoc merlin-mode ocp-indent json-mode flycheck undo-tree git-timemachine merlin-company merlin tuareg clang-format eshell-git-prompt ansi-term-mode ansi-term eterm-256color which-key use-package rainbow-delimiters magit lsp-ui lsp-metals lsp-ivy ivy-rich ivy-prescient helpful doom-themes doom-modeline counsel-projectile company-box)))
-  (custom-set-faces
-   ;; custom-set-faces was added by Custom.
-   ;; If you edit it by hand, you could mess it up, so be careful.
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   )
-  ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
-  ;; (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
-  ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
 #+end_src
