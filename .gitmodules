@@ -1,0 +1,3 @@
+[submodule "plugins/sort-tab"]
+	path = plugins/sort-tab
+	url = git@github.com:manateelazycat/sort-tab.git
