@@ -5,6 +5,21 @@
 ** Git
 
 ** Eglot
+Base eglot with eldoc echo area limited to one line
+#+begin_src emacs-lisp
+  (use-package eglot
+    :hook
+    (rust-mode-hook . (eglot-ensure t))
+    (python-mode-hook . (eglot-ensure t))
+    (c-mode-hook . (eglot-ensure t))
+    (c++-mode-hook . (eglot-ensure t))
+  
+    :config
+    (setq eldoc-echo-area-use-multiline-p nil))
+#+end_src
+*** How to get Eglot work with remote python developement through TRAMP
+Since most of my code are developed and run on a remote server. I need figure out how to use Eglot for remote dev. This is especially difficult for python since I use anaconda for environment management.
+So I come up with the following ~.dir-locals.el~ file template for each project.
 
 ** Completeion
 Using ~company~ for completion
@@ -356,6 +371,11 @@ Shortcuts, with prefix ~C-c C-w~
   (use-package eyebrowse
     :config
     (eyebrowse-mode t))
+#+end_src
+
+** Highlight-line color
+#+begin_src emacs-lisp
+  (set-face-background hl-line-face "SystemHilight")
 #+end_src
 
 * Misc
