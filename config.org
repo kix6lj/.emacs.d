@@ -7,15 +7,13 @@
 ** Eglot
 Base eglot with eldoc echo area limited to one line
 #+begin_src emacs-lisp
-  (use-package eglot
-    :hook
-    (rust-mode-hook . (eglot-ensure))
-    (python-mode-hook . (eglot-ensure))
-    (c-mode-hook . (eglot-ensure))
-    (c++-mode-hook . (eglot-ensure))
-  
-    :config
-    (setq eldoc-echo-area-use-multiline-p nil))
+    (use-package eglot
+      :hook
+      ((rust-ts-mode python-ts-mode c-ts-mode c++-ts-mode) . eglot-ensure)
+    
+      :config
+      (setq eldoc-echo-area-use-multiline-p nil)
+      (setq eglot-events-buffer-size 0))
 #+end_src
 
 *** Eglot with TRAMP
@@ -48,16 +46,16 @@ The following code add capability for creating ~pyrightconfig.json~ from a given
 Using ~company~ for completion
 #+begin_src emacs-lisp
   (use-package company
-    :after lsp-mode
-    :hook (lsp-mode . company-mode)
+    :after eglot
+    :hook ((python-ts-mode c-ts-mode c++-ts-mode) . company-mode)
     :bind
     (:map company-active-map
           ("<tab>" . company-complete-selection))
-    (:map lsp-mode-map
-          ("<tab>" . company-indent-or-complete-common))
     :custom
     (company-minimum-prefix-length 1)
-    (company-idle-delay 0.0))
+    (company-idle-delay 0.1)
+    (company-show-numbers t)
+    (company-tooltip-limit 20))
 
   (use-package company-box
     :hook (company-mode . company-box-mode))
@@ -430,6 +428,11 @@ Shortcuts, with prefix ~C-c C-w~
 #+end_src
 
 * Misc
+** Enable dir-locals in remote
+#+begin_src emacs-lisp
+  (setq enable-remote-dir-locals t)
+#+end_src
+
 ** git-timemachine
 Walk through git commits.
 #+begin_src emacs-lisp
