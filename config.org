@@ -9,18 +9,41 @@ Base eglot with eldoc echo area limited to one line
 #+begin_src emacs-lisp
   (use-package eglot
     :hook
-    (rust-mode-hook . (eglot-ensure t))
-    (python-mode-hook . (eglot-ensure t))
-    (c-mode-hook . (eglot-ensure t))
-    (c++-mode-hook . (eglot-ensure t))
+    (rust-mode-hook . (eglot-ensure))
+    (python-mode-hook . (eglot-ensure))
+    (c-mode-hook . (eglot-ensure))
+    (c++-mode-hook . (eglot-ensure))
   
     :config
     (setq eldoc-echo-area-use-multiline-p nil))
 #+end_src
-*** How to get Eglot work with remote python developement through TRAMP
-Since most of my code are developed and run on a remote server. I need figure out how to use Eglot for remote dev. This is especially difficult for python since I use anaconda for environment management.
-So I come up with the following ~.dir-locals.el~ file template for each project.
 
+*** Eglot with TRAMP
+When specifying the remote lsp server, the remote prefix such as ~sshx:server~ is not needed.
+
+*** Eglot with Pyright
+Pyright needs to know the virtual environment. So we need to set ~pyrightconfig.json~, with ~venvPath~ be the folder of all venvs and ~venv~ be the venv name. The actual path will be ~venvPath/venv~.
+
+The following code add capability for creating ~pyrightconfig.json~ from a given path
+#+begin_src emacs-lisp
+  (defun create-pyright-config (base-dir venv-path)
+    "Create pyrightconfig.json in the given project base directory using
+  the given venv path"
+    (interactive (list
+                  (read-directory-name "Project base: ")
+                  (read-directory-name "VENV: ")))
+    (let* (
+           (venv-dir (tramp-file-local-name (file-truename venv-path)))
+           (venv-file-name (directory-file-name venv-dir))
+           (venvPath (file-name-directory venv-file-name))
+           (venv (file-name-base venv-file-name))
+           (out-file (expand-file-name "pyrightconfig.json" base-dir))
+           (out-contents (json-encode (list :venvPath venvPath :venv venv))))
+      (with-temp-file out-file (insert out-contents))))
+#+end_src
+
+*** TODO Support ~base-dir~ that is not a git-root
+  
 ** Completeion
 Using ~company~ for completion
 #+begin_src emacs-lisp
@@ -42,12 +65,39 @@ Using ~company~ for completion
 
 ** Languages
 *** Python
-Install ~conda.el~
+Creating ~pyrightconfig.json~ for pyright
 #+begin_src emacs-lisp
-  ;; (use-package conda
-  ;;   :config
-  ;;   (conda-env-initialize-interactive-shells)
-  ;;   (conda-env-initialize-eshell))
+(defun pyrightconfig-write (virtualenv)
+  (interactive "DEnv: ")
+
+  (let* (;; file-truename and tramp-file-local-name ensure that neither `~' nor
+         ;; the Tramp prefix (e.g. "/ssh:my-host:") wind up in the final
+         ;; absolute directory path.
+         (venv-dir (tramp-file-local-name (file-truename virtualenv)))
+
+         ;; Given something like /path/to/.venv/, this strips off the trailing `/'.
+         (venv-file-name (directory-file-name venv-dir))
+
+         ;; Naming convention for venvPath matches the field for
+         ;; pyrightconfig.json.  `file-name-directory' gets us the parent path
+         ;; (one above .venv).
+         (venvPath (file-name-directory venv-file-name))
+
+         ;; Grabs just the `.venv' off the end of the venv-file-name.
+         (venv (file-name-base venv-file-name))
+
+         ;; Eglot demands that `pyrightconfig.json' is in the project root
+         ;; folder.
+         (base-dir (vc-git-root default-directory))
+         (out-file (expand-file-name "pyrightconfig.json" base-dir))
+
+         ;; Finally, get a string with the JSON payload.
+         (out-contents (json-encode (list :venvPath venvPath :venv venv))))
+
+    ;; Emacs uses buffers for everything.  This creates a temp buffer, inserts
+    ;; the JSON payload, then flushes that content to final `pyrightconfig.json'
+    ;; location
+    (with-temp-file out-file (insert out-contents))))
 #+end_src
 ** Remote development
 Using ~tramp~ for remote development.
@@ -252,6 +302,7 @@ Roam is a note taking tool for connecting different entries (See [[https://roamr
 
 * Interaction
 ** Ivy
+Pressing ~C-M-j~ will enter the typed option instead of choosing the auto-completed option
 #+begin_src emacs-lisp
     ;;; ivy and swiper
   (use-package swiper)
