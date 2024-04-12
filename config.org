@@ -449,6 +449,7 @@ Using ~ace-window~ to deal with multiple windows. Pressing ~M-o~ to call ~ace-wi
     :ensure t
     :config
     (dashboard-setup-startup-hook)
+  
     :custom
     (dashboard-startup-banner 'logo);; Content is not centered by default. To center, set
     (dashboard-center-content t)
@@ -458,6 +459,10 @@ Using ~ace-window~ to deal with multiple windows. Pressing ~M-o~ to call ~ace-wi
                        (bookmarks . 5)
                        (projects . 5)
                        (agenda . 5)))
+
+    :bind
+    (:map dashboard-mode-map
+          ("R" . dashboard-refresh-buffer))
     )
 #+end_src
 
