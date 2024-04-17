@@ -372,6 +372,7 @@ Using ~C-t~ to toggle popup information on candidates
 
   (use-package corfu-popupinfo
     :after corfu
+    :ensure nil
     :hook
     (corfu-mode . corfu-popupinfo-mode)
     :custom
@@ -468,11 +469,12 @@ Using ~ace-window~ to deal with multiple windows. Pressing ~M-o~ to call ~ace-wi
 
 ** Icons fonts
 #+begin_src emacs-lisp
-  (use-package all-the-icons
-    :if (display-graphic-p))
+    (use-package all-the-icons
+      :if (display-graphic-p)
+      :ensure t)
 
-  (use-package nerd-icons
-    :if (display-graphic-p))
+    (use-package nerd-icons
+      :if (display-graphic-p))
 #+end_src
 
 ** Theme
@@ -486,23 +488,6 @@ Using ~ace-window~ to deal with multiple windows. Pressing ~M-o~ to call ~ace-wi
 
   (use-package rainbow-delimiters
     :hook (prog-mode . rainbow-delimiters-mode))
-#+end_src
-
-** Window management
-Shortcuts, with prefix ~C-c C-w~
-| Key | Function                     |
-|-----+------------------------------|
-| ~<~   | Previous window config       |
-| ~>~   | Next window config           |
-| ~'~   | Last window config           |
-| ~"~   | Close current window config  |
-| ~,~   | Rename current window config |
-| ~0-9~ | Swith to window config       |
-
-#+begin_src emacs-lisp
-  (use-package eyebrowse
-    :config
-    (eyebrowse-mode t))
 #+end_src
 
 ** Highlight-line color

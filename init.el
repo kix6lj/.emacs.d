@@ -31,6 +31,7 @@
   (package-install 'use-package))
 
 (require 'use-package)
+(setq use-package-always-ensure t)
 
 (column-number-mode)
 (global-display-line-numbers-mode t)
@@ -52,10 +53,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-show-quick-access t nil nil "Customized with use-package company")
- '(org-agenda-files '("d:/kix6/GTD/gtd.org" "d:/kix6/GTD/tickler.org"))
  '(package-selected-packages
-   '(embark-consult embark dashboard emacs-dashboard corfu-popupinfo corfu-info vertico-directory marginalia corfu consult orderless vertico eyebrowse neotree treesit-auto sort-tab ledger-mode ob-ledger utop flycheck-ocaml merlin-eldoc merlin-mode ocp-indent json-mode flycheck undo-tree git-timemachine merlin-company merlin tuareg clang-format eshell-git-prompt ansi-term-mode ansi-term eterm-256color which-key use-package rainbow-delimiters magit lsp-ui lsp-metals helpful doom-themes doom-modeline company-box))
+   '(all-the-icons org-contrib calfw-org calfw embark-consult embark dashboard emacs-dashboard corfu-popupinfo corfu-info vertico-directory marginalia corfu consult orderless vertico neotree treesit-auto sort-tab ledger-mode ob-ledger utop flycheck-ocaml merlin-eldoc merlin-mode ocp-indent json-mode flycheck undo-tree git-timemachine merlin tuareg clang-format eshell-git-prompt ansi-term-mode ansi-term eterm-256color which-key use-package rainbow-delimiters magit lsp-ui lsp-metals helpful doom-themes doom-modeline))
  '(safe-local-variable-values
    '((eval add-to-list 'eglot-server-programs
 	   '(python-ts-mode "/home/kix6/.miniconda3/envs/SMAC/bin/pyright-langserver" "--stdio"))
