@@ -502,6 +502,15 @@ Using ~ace-window~ to deal with multiple windows. Pressing ~M-o~ to call ~ace-wi
 #+end_src
 
 * Misc
+
+** pdf-tools
+#+begin_src emacs-lisp
+  (use-package pdf-tools
+    :ensure t
+    :init
+    (add-to-list 'auto-mode-alist '("\\.pdf\\'" . pdf-view-mode)))
+#+end_src
+
 ** Enable dir-locals in remote
 #+begin_src emacs-lisp
   (setq enable-remote-dir-locals t)
