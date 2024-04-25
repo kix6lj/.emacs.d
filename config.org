@@ -187,72 +187,73 @@ Configuring ~org-mode~ keybindings
 | ~C-c c~       | Capture template |
 
 #+begin_src emacs-lisp
-        (defun org-mode-setup ()
-          (org-indent-mode)
-          (variable-pitch-mode 1)
-          (auto-fill-mode 0)
-          (visual-line-mode 1))
+  (defun org-mode-setup ()
+    (org-indent-mode)
+    (variable-pitch-mode 1)
+    (auto-fill-mode 0)
+    (visual-line-mode 1))
 
-        (use-package org
-          :hook (org-mode . org-mode-setup)
-          :hook (org-mode . org-font-setup)
-          :bind
-          (:map org-mode-map
-                ("M-S-<right>" . org-table-insert-column)
-                ("M-S-<left>" . org-table-delete-column)
-                ("M-S-<up>" . org-table-kill-row))
+  (use-package org
+    :hook (org-mode . org-mode-setup)
+    :hook (org-mode . org-font-setup)
+    :bind
+    (:map org-mode-map
+          ("M-S-<right>" . org-table-insert-column)
+          ("M-S-<left>" . org-table-delete-column)
+          ("M-S-<up>" . org-table-kill-row))
 
-          :config
-          (setq org-ellipsis " ▾"
-                org-hide-emphasis-markers t)
+    :config
+    (setq org-ellipsis " ▾"
+          org-hide-emphasis-markers t)
 
-          (setq org-agenda-start-with-log-mode t)
-          (setq org-log-done 'time)
-          (setq org-log-into-drawer t)
+    (setq org-agenda-start-with-log-mode t)
+    (setq org-log-done 'time)
+    (setq org-log-into-drawer t)
 
-          (require 'org-habit)
+    (require 'org-habit)
 
-          (setq org-agenda-files
-                '("~/GTD/inbox.org"
-                  "~/GTD/gtd.org"
-                  "~/GTD/tickler.org"))
+    (setq org-agenda-files
+          '("~/GTD/inbox.org"
+            "~/GTD/gtd.org"
+            "~/GTD/tickler.org"))
 
 
-          (setq org-todo-keywords
-                '((sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "WIP(p!)" "|" "DONE(d!)" "CANCLED(c)")))
+    (setq org-todo-keywords
+          '((sequence "TODO(t)" "NEXT(n)" "WAITING(w)" "WIP(p!)" "|" "DONE(d!)" "CANCLED(c)")))
 
-          (setq org-todo-keyword-faces
-                '(("TODO" . "red") ("WIP" . "yellow")
-                  ("CANCELED" . "orange")
-                  ("DONE" . "green")))
-    
-          (setq org-refile-targets
-                '(("~/GTD/gtd.org" :maxlevel . 3)
-                  ("~/GTD/someday.org" :level . 1)
-                  ("~/GTD/tickler.org" :maxlevel . 2)
-                  ("~/GTD/canceled.org" :level . 1)))
+    (setq org-todo-keyword-faces
+          '(("TODO" . "red") ("WIP" . "yellow")
+            ("CANCELED" . "orange")
+            ("DONE" . "green")))
 
-          (advice-add 'org-refile :after 'org-save-all-org-buffers)
+    (setq org-refile-targets
+          '(("~/GTD/gtd.org" :maxlevel . 3)
+            ("~/GTD/done.org" :maxlevel . 3)
+            ("~/GTD/someday.org" :level . 1)
+            ("~/GTD/tickler.org" :maxlevel . 2)
+            ("~/GTD/canceled.org" :level . 1)))
 
-          (setq org-capture-templates
-                `(("t" "Todo [inbox]" entry
-                   (file+headline "~/GTD/inbox.org" "Tasks")
-                   "* TODO %i%?")
-                  ("T" "Tickler" entry
-                   (file+headline "~/GTD/tickler.org" "Tickler")
-                   "* %i%? \n %U")))
+    (advice-add 'org-refile :after 'org-save-all-org-buffers)
 
-          (define-key global-map (kbd "C-c c")
-                      (lambda () (interactive) (org-capture)))
+    (setq org-capture-templates
+          `(("t" "Todo [inbox]" entry
+             (file+headline "~/GTD/inbox.org" "Tasks")
+             "* TODO %i%?")
+            ("T" "Tickler" entry
+             (file+headline "~/GTD/tickler.org" "Tickler")
+             "* %i%? \n %U")))
 
-          (org-font-setup)
+    (define-key global-map (kbd "C-c c")
+                (lambda () (interactive) (org-capture)))
 
-          (org-babel-do-load-languages
-           'org-babel-load-languages
-           '((emacs-lisp . t)
-             (python . t)
-             (ledger . t)))
-          )
+    (org-font-setup)
+
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (python . t)
+       (ledger . t)))
+    )
 
 #+end_src
 
@@ -283,7 +284,7 @@ Roam is a note taking tool for connecting different entries (See [[https://roamr
         :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
         :unnarrowed t)
        ("p" "paper notes" plain
-        "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year} \n\n* Summary\n\n%?"
+        "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year} \n\n* Summary\n\n * Key terms\n\n%?"
         :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
         :unnarrowed t)))
 
