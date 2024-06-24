@@ -255,6 +255,12 @@ Configuring ~org-mode~ keybindings
        (ledger . t)))
     )
 
+  
+  (use-package org-bullets
+    :after org
+    :hook (org-mode . org-bullets-mode)
+    :custom
+    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 #+end_src
 
 ** org-roam
@@ -284,7 +290,7 @@ Roam is a note taking tool for connecting different entries (See [[https://roamr
         :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
         :unnarrowed t)
        ("p" "paper notes" plain
-        "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year} \n\n* Summary\n\n * Key terms\n\n%?"
+        "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year} \n\n* Summary\n\n* Key terms\n\n%?"
         :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
         :unnarrowed t)))
 
@@ -303,11 +309,18 @@ Roam is a note taking tool for connecting different entries (See [[https://roamr
     (org-roam-db-autosync-mode)
     (org-roam-setup))
 
-  (use-package org-bullets
-    :after org
-    :hook (org-mode . org-bullets-mode)
-    :custom
-    (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+  (use-package websocket
+    :after org-roam)
+
+  (use-package org-roam-ui
+;;    :straight
+;;    (:host github :repo "org-roam/org-roam-ui" :branch "main" :files ("*.el" "out"))
+    :after org-roam
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
 #+end_src
 
 * Interaction
