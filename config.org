@@ -47,10 +47,8 @@ The following code add capability for creating ~pyrightconfig.json~ from a given
 
 *** TODO Support ~base-dir~ that is not a git-root
   
-<<<<<<< Updated upstream
 ** Completion
-=======
->>>>>>> Stashed changes
+
 ** Languages
 *** Python
 Creating ~pyrightconfig.json~ for pyright
@@ -271,20 +269,6 @@ Roam is a note taking tool for connecting different entries (See [[https://roamr
             '(("d" "default" entry "* %<%I:%M %p>: %?"
                :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
 
-<<<<<<< Updated upstream
-    :custom
-    (org-roam-directory "~/RoamNotes")
-    (org-roam-completion-everywhere t)
-    (org-roam-capture-templates
-     '(("d" "default" plain
-        "%?"
-        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
-        :unnarrowed t)
-       ("p" "paper notes" plain
-        "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year} \n\n* Summary\n\n* Key terms\n\n%?"
-        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
-        :unnarrowed t)))
-=======
       :custom
       (org-roam-directory "~/RoamNotes")
       (org-roam-completion-everywhere t)
@@ -301,7 +285,6 @@ Roam is a note taking tool for connecting different entries (See [[https://roamr
           "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year} \n\n* Summary\n\n* Key terms\n\n%?"
           :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
           :unnarrowed t)))
->>>>>>> Stashed changes
 
       :bind (("C-c n l" . org-roam-buffer-toggle)
              ("C-c n f" . org-roam-node-find)
@@ -318,7 +301,6 @@ Roam is a note taking tool for connecting different entries (See [[https://roamr
       (org-roam-db-autosync-mode)
       (org-roam-setup))
 
-<<<<<<< Updated upstream
   (use-package websocket
     :after org-roam)
 
@@ -331,13 +313,11 @@ Roam is a note taking tool for connecting different entries (See [[https://roamr
           org-roam-ui-follow t
           org-roam-ui-update-on-save t
           org-roam-ui-open-on-start t))
-=======
     (use-package org-bullets
       :after org
       :hook (org-mode . org-bullets-mode)
       :custom
       (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
->>>>>>> Stashed changes
 #+end_src
 
 * Interaction
