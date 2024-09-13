@@ -47,7 +47,10 @@ The following code add capability for creating ~pyrightconfig.json~ from a given
 
 *** TODO Support ~base-dir~ that is not a git-root
   
+<<<<<<< Updated upstream
 ** Completion
+=======
+>>>>>>> Stashed changes
 ** Languages
 *** Python
 Creating ~pyrightconfig.json~ for pyright
@@ -259,15 +262,16 @@ Roam is a note taking tool for connecting different entries (See [[https://roamr
 | ~C-c n i~ | insert org-roam node   |
 
 #+begin_src emacs-lisp
-  (use-package org-roam
-    :ensure t
-    :init
-    (setq org-roam-v2-ack t)
-    (setq org-roam-dailies-directory "journal/")
-    (setq org-roam-dailies-capture-templates
-          '(("d" "default" entry "* %<%I:%M %p>: %?"
-             :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+    (use-package org-roam
+      :ensure t
+      :init
+      (setq org-roam-v2-ack t)
+      (setq org-roam-dailies-directory "journal/")
+      (setq org-roam-dailies-capture-templates
+            '(("d" "default" entry "* %<%I:%M %p>: %?"
+               :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
 
+<<<<<<< Updated upstream
     :custom
     (org-roam-directory "~/RoamNotes")
     (org-roam-completion-everywhere t)
@@ -280,22 +284,41 @@ Roam is a note taking tool for connecting different entries (See [[https://roamr
         "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year} \n\n* Summary\n\n* Key terms\n\n%?"
         :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
         :unnarrowed t)))
+=======
+      :custom
+      (org-roam-directory "~/RoamNotes")
+      (org-roam-completion-everywhere t)
+      (org-roam-capture-templates
+       '(("d" "default" plain
+          "%?"
+          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+          :unnarrowed t)
+         ("t" "term" plain
+          "\n* Description\n\n%?"
+          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+          :unnarrowed t)
+         ("p" "paper notes" plain
+          "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year} \n\n* Summary\n\n* Key terms\n\n%?"
+          :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n")
+          :unnarrowed t)))
+>>>>>>> Stashed changes
 
-    :bind (("C-c n l" . org-roam-buffer-toggle)
-           ("C-c n f" . org-roam-node-find)
-           ("C-c n i" . org-roam-node-insert)
-           :map org-mode-map
-           ("C-M-i" . completion-at-point)
-           :map org-roam-dailies-map
-           ("Y" . org-roam-dailies-capture-yesterday)
-           ("T" . org-roam-dailies-capture-tomorrow))
-    :bind-keymap
-    ("C-c n d" . org-roam-dailies-map)
-    :config
-    (require 'org-roam-dailies)
-    (org-roam-db-autosync-mode)
-    (org-roam-setup))
+      :bind (("C-c n l" . org-roam-buffer-toggle)
+             ("C-c n f" . org-roam-node-find)
+             ("C-c n i" . org-roam-node-insert)
+             :map org-mode-map
+             ("C-M-i" . completion-at-point)
+             :map org-roam-dailies-map
+             ("Y" . org-roam-dailies-capture-yesterday)
+             ("T" . org-roam-dailies-capture-tomorrow))
+      :bind-keymap
+      ("C-c n d" . org-roam-dailies-map)
+      :config
+      (require 'org-roam-dailies)
+      (org-roam-db-autosync-mode)
+      (org-roam-setup))
 
+<<<<<<< Updated upstream
   (use-package websocket
     :after org-roam)
 
@@ -308,6 +331,13 @@ Roam is a note taking tool for connecting different entries (See [[https://roamr
           org-roam-ui-follow t
           org-roam-ui-update-on-save t
           org-roam-ui-open-on-start t))
+=======
+    (use-package org-bullets
+      :after org
+      :hook (org-mode . org-bullets-mode)
+      :custom
+      (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+>>>>>>> Stashed changes
 #+end_src
 
 * Interaction
@@ -531,9 +561,6 @@ Walk through git commits.
     :config
     (setq explicit-shell-file-name "bash")
     (setq term-prompt-regexp "^[^#?%>\n]*[#$%] *"))
-
-  (use-package eterm-256color
-    :hook (term-mode . eterm-256color-mode))
 
   (use-package clang-format)
 
