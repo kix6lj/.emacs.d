@@ -48,24 +48,6 @@ The following code add capability for creating ~pyrightconfig.json~ from a given
 *** TODO Support ~base-dir~ that is not a git-root
   
 ** Completion
-Using ~company~ for completion
-#+begin_src emacs-lisp
-  (use-package company
-    :after eglot
-    :hook ((python-ts-mode c-ts-mode c++-ts-mode) . company-mode)
-    :bind
-    (:map company-active-map
-          ("<tab>" . company-complete-selection))
-    :custom
-    (company-minimum-prefix-length 1)
-    (company-idle-delay 0.1)
-    (company-show-numbers t)
-    (company-tooltip-limit 20))
-
-  (use-package company-box
-    :hook (company-mode . company-box-mode))
-#+end_src
-
 ** Languages
 *** Python
 Creating ~pyrightconfig.json~ for pyright
@@ -101,6 +83,11 @@ Creating ~pyrightconfig.json~ for pyright
       ;; the JSON payload, then flushes that content to final `pyrightconfig.json'
       ;; location
       (with-temp-file out-file (insert out-contents))))
+#+end_src
+*** CUDA
+#+begin_src emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.cu\\'" . c++-mode))
+  (add-to-list 'auto-mode-alist '("\\.cuh\\'". c++-mode))
 #+end_src
 ** Remote development
 Using ~tramp~ for remote development.
